@@ -1,5 +1,5 @@
-#include <DS3231.h>
-#include "TM1637.h"
+#include <DS3231.h> // http://www.rinkydinkelectronics.com/library.php?id=73
+#include "TM1637.h" // Grove 4-digit display (Seeed studio)
 
 #define CLK 4
 #define DIO 3

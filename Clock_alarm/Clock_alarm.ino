@@ -17,6 +17,7 @@ uint8_t h0,h1,m2,m3;
 bool ClockPoint = 0;
 unsigned long t1;
 int br = 0;
+int br2 = 0;
 volatile bool flag = false;
 
 void setup(){
@@ -43,6 +44,10 @@ void loop(){
     br++; 
     if(br >= 3000) setAlarm();
   }
+  if(digitalRead(scroll) == LOW){
+    br2++; 
+    if(br2 >= 3000) timeSetup();
+  }
   delayMicroseconds(500);
   if(checkAlarm() == 1){
     if(t.sec<10 && flag == true){
@@ -61,6 +66,49 @@ void TimeUpdate(){
   TimeDisp[2] = t.min/10;
   TimeDisp[3] = t.min % 10;
 }
+
+void timeSetup(){
+  int count,i;
+  int setHour;
+  int setMinute;
+  int setTimeDigits[4];
+  int8_t digitSelect;
+
+  displ.point(0);
+  displ.clearDisplay();
+  delay(500);
+  
+  i=0;
+  count=0;
+  digitSelect = Digits[i];
+  do{
+    if(digitalRead(scroll) == LOW){
+      if(count == 0 && i>2) i=0;
+      if(count == 1 && TimeDisp[0] == 2 && i>3) i=0;
+      if(count == 1 && TimeDisp[0] < 2 && i>9) i=0;
+      if(count == 2 && i>5) i=0;
+      if(count == 3 && i>9) i=0;
+      digitSelect = Digits[i];
+      displ.display(count,digitSelect);
+      i++;
+    }
+    if(digitalRead(enter) == LOW){
+      setTimeDigits[count] = digitSelect;
+      if(count == 0)  h0 = digitSelect;
+      else if(count == 1) h1 = digitSelect;
+      else if(count == 2) m2 = digitSelect;
+      else m3 = digitSelect;
+      count++;
+      i=0;
+    }
+    delay(200);
+  }while(count<4);
+  setHour = setTimeDigits[0]*10 + setTimeDigits[1];
+  setMinute = setTimeDigits[2]*10 + setTimeDigits[3];
+  rtc.setTime(setHour, setMinute, 0);
+  br2 = 0;
+}
+
 
 void setAlarm(){
   int count,i;

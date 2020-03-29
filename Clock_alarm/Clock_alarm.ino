@@ -94,10 +94,6 @@ void timeSetup(){
     }
     if(digitalRead(enter) == LOW){
       setTimeDigits[count] = digitSelect;
-      if(count == 0)  h0 = digitSelect;
-      else if(count == 1) h1 = digitSelect;
-      else if(count == 2) m2 = digitSelect;
-      else m3 = digitSelect;
       count++;
       i=0;
     }
